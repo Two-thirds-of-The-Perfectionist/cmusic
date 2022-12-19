@@ -35,6 +35,7 @@ urlpatterns = [
     path('docs/', swagger_view.with_ui('swagger', cache_timeout=0)),
     path('account/', include('account.urls')),
     path('', include('main.urls')),
+    path('', include('comment.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
