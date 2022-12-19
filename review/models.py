@@ -27,4 +27,4 @@ class PostFavorites(models.Model):
 
 class CommentsLikes(models.Model):
     user_id = models.ForeignKey(User, related_name='comment_likes', on_delete=models.CASCADE)
-    comment_id = models.ForeignKey(Comment, related_name='likes', on_delete=models.CASCADE)
+    comment_id = models.ForeignKey(Comments, related_name='likes', on_delete=models.CASCADE)
