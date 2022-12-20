@@ -7,12 +7,14 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .serializers import PostSerializer, MusicSerializer
 from .models import Post,Music
+from .filters import LikeFilter, PostFilter
 
 
 class PostViewSet(ModelViewSet):
     queryset  = Post.objects.all().order_by('id')
     serializer_class = PostSerializer
     permission_classes = [IsAdminUser]
+    filter_backends = [LikeFilter, PostFilter]
    
 
     def get_permissions(self):

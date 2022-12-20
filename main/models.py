@@ -8,12 +8,12 @@ class Post(models.Model):
     user_id = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
     title = models.CharField(max_length=250)
     description = models.TextField()
-    cover = models.ImageField(upload_to='posts')
+    cover = models.ImageField(upload_to='posts', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.author.username} -> {self.body}'
+        return f'{self.user_id.username} -> {self.description}'
 
 
 class Music(models.Model):

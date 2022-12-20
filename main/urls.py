@@ -5,9 +5,9 @@ from .models import PlayList
 # from main.views import delete_playlist, create_playlist
 
 router = DefaultRouter()
-router.register('posts', PostViewSet)
+router.register('posts/', PostViewSet)
 # router.register('playlist', PlayListViewSet)
-router.register('music', MusicViewSet)
+router.register('music/', MusicViewSet)
 
 
 urlpatterns = [
