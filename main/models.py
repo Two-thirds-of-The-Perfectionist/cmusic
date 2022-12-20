@@ -25,5 +25,3 @@ class Music(models.Model):
 class PlayList(models.Model):
     post_id = models.ForeignKey(Post, related_name='post' ,on_delete=models.CASCADE)
     playlist_id = models.ForeignKey(Music, related_name='playlist',on_delete=models.CASCADE)
-
-
