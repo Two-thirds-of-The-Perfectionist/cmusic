@@ -16,11 +16,7 @@ from .models import Post, Music
 from .filters import PostFilter, LikeFilter
 from .permissions import IsAuthorOrReadOnly
 
-
-
-class MusicViewSet(ModelViewSet):
-    queryset  = Music.objects.all().order_by('id')
-    serializer_class = MusicSerializer
+from review.models import PostLike, PostFavorite
 
 
 User = get_user_model()
@@ -29,15 +25,9 @@ User = get_user_model()
 class PostViewSet(ModelViewSet):
     queryset  = Post.objects.all().order_by('id')
     serializer_class = PostSerializer
-    permission_classes = [IsAdminUser]
-    filterset_class = PostFilter, LikeFilter
+    # permission_classes = [IsAdminUser]
+    # filterset_class = PostFilter, LikeFilter
     
-
-    def get_permissions(self):
-        if self.action in ['retrieve', 'list', 'search']:
-            return []
-        return [IsAuthenticatedOrReadOnly()]
-
 
     @swagger_auto_schema(manual_parameters=[
         openapi.Parameter('q',openapi.IN_QUERY, type=openapi.TYPE_STRING)
