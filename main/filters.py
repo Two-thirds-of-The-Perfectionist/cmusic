@@ -9,7 +9,7 @@ class LikeFilter(FilterSet):
     
     
     class Meta:
-        model = PostLike        
+        model = PostLike
         fields = ['like_filter']
 
 
