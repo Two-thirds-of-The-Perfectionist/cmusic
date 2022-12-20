@@ -29,8 +29,9 @@ class Post(models.Model):
 
 class Music(models.Model):
     music = models.FileField(upload_to='music')
+    author = models.CharField(max_length=50)
     title = models.CharField(max_length=250)
-    cover = models.ImageField(upload_to='music_cover')
+    cover = models.ImageField(upload_to='music_cover', default='music_cover/default.jpg')
 
 
 class Playlist(models.Model):

@@ -91,3 +91,10 @@ class MusicViewSet(ModelViewSet):
 
     def get_permissions(self):
         return [IsAuthenticatedOrReadOnly()]
+
+
+    @action(['PATCH'], detail=False)
+    def patch(self, request, pk=None):
+        user_id = request.data.get('user')
+        user = get_object_or_404(User, id=user_id)
+        music = get_object_or_404(Music, id=pk)
