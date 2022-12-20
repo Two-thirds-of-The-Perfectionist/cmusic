@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Post
+from .models import Post, PlayList, Music
 
 class PostSerializer(ModelSerializer):
     class Meta:
@@ -10,6 +10,17 @@ class PostSerializer(ModelSerializer):
     #     rep = super().to_representation(instance)
     #     rep['user_id']= instance.user
 
-  
+
+class PlayListSerializer(ModelSerializer):
+    class Meta:
+        model = PlayList
+        fields = '__all__'
+
+
+
+class MusicSerializer(ModelSerializer):
+    class Meta:
+        model = Music
+        fields = '__all__'
 
 
