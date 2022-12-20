@@ -1,6 +1,6 @@
 from django.db.models import Q
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
@@ -14,14 +14,12 @@ from review.models import PostLike, PostFavorite
 class PostViewSet(ModelViewSet):
     queryset  = Post.objects.all().order_by('id')
     serializer_class = PostSerializer
-    permission_classes = [IsAdminUser]
-   
 
 
     def get_permissions(self):
-        if self.action in ['retrieve', 'list','search']:
-            return [] 
-        return [IsAdminUser()] 
+        if self.action in ['retrieve', 'list', 'search']:
+            return []
+        return [IsAuthenticatedOrReadOnly()]
 
 
     @swagger_auto_schema(manual_parameters=[
