@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Music, PlayList
+from .models import Post, Music, Playlist
 from review.models import Comment, PostLike, PostFavorite, CommentLike
 
 
@@ -28,7 +28,7 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Post, PostAdmin)
 admin.site.register(Music)
-admin.site.register(PlayList)
+admin.site.register(Playlist)
 admin.site.register(PostFavorite)
 
 
