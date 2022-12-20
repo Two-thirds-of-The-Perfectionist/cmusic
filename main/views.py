@@ -5,9 +5,15 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+
 from .serializers import PostSerializer, MusicSerializer
 from .models import Post,Music
 from .filters import LikeFilter, PostFilter
+
+from .serializers import PostSerializer
+from .models import Post
+
+from review.models import PostLike, PostFavorite
 
 
 class PostViewSet(ModelViewSet):
@@ -39,6 +45,7 @@ class PostViewSet(ModelViewSet):
         serializer = self.get_serializer(qs, many=True) 
         return Response(serializer.data, status=200)
 
+
 # class PlayListViewSet(ModelViewSet):
 #     queryset  = PlayList.objects.all().order_by('id')
 #     serializer_class = PlayListSerializer
@@ -50,3 +57,30 @@ class MusicViewSet(ModelViewSet):
     serializer_class = MusicSerializer
     permission_classes = [IsAdminUser]
 
+
+    @action(['POST'], detail=True)
+    def like(self, request, pk=None):
+        user_id = request.data.get('user')
+        user = get_object_or_404(User, id=user_id)
+        post = get_object_or_404(Post, id=pk)
+        
+        if PostLike.objects.filter(post_id=post, user_id=user).exists():
+            PostLike.objects.filter(post_id=post, user_id=user).delete()
+        else:
+            PostLike.objects.create(post_id=post, user_id=user)
+        
+        return Response(status=201)
+
+
+    @action(['POST'], detail=True)
+    def favorite(self, request, pk=None):
+        user_id = request.data.get('user')
+        user = get_object_or_404(User, id=user_id)
+        post = get_object_or_404(Post, id=pk)
+        
+        if PostFavorite.objects.filter(post_id=post, user_id=user).exists():
+            PostFavorite.objects.filter(post_id=post, user_id=user).delete()
+        else:
+            PostFavorite.objects.create(post_id=post, user_id=user)
+        
+        return Response(status=201)
