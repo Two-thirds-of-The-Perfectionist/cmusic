@@ -15,5 +15,5 @@ class IsAuthorOrReadOnly(BasePermission):
         if not request.user.is_authenticated:
             return False
         if isinstance(obj, Post):
-            return request.user == obj.course.author
-        return request.user == obj.author
+            return request.user == obj.user_id
+        
