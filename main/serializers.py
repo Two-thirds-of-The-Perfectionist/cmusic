@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Post, PlayList, Music
+from .models import Post, Playlist, Music
 
 class PostSerializer(ModelSerializer):
     class Meta:
@@ -22,7 +22,7 @@ class PostSerializer(ModelSerializer):
 
 class PlayListSerializer(ModelSerializer):
     class Meta:
-        model = PlayList
+        model = Playlist
         fields = '__all__'
 
 
