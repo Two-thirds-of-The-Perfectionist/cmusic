@@ -5,7 +5,7 @@ from review.models import PostLike
 from .models import Post
 
 class LikeFilter(FilterSet):
-    like_filter = django_filters.CharFilter(field_name='like_filter')
+    like_filter = django_filters.CharFilter(field_name='like__filter')
     
     
     class Meta:
