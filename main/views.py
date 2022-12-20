@@ -7,11 +7,8 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from .serializers import PostSerializer, MusicSerializer
-from .models import Post,Music
+from .models import Post, Music
 from .filters import LikeFilter, PostFilter
-
-from .serializers import PostSerializer
-from .models import Post
 
 from review.models import PostLike, PostFavorite
 
@@ -19,7 +16,6 @@ from review.models import PostLike, PostFavorite
 class PostViewSet(ModelViewSet):
     queryset  = Post.objects.all().order_by('id')
     serializer_class = PostSerializer
-    permission_classes = [IsAdminUser]
     filter_backends = [LikeFilter, PostFilter]
     
 
@@ -55,7 +51,6 @@ class PostViewSet(ModelViewSet):
 class MusicViewSet(ModelViewSet):
     queryset  = Music.objects.all().order_by('id')
     serializer_class = MusicSerializer
-    permission_classes = [IsAdminUser]
 
 
     @action(['POST'], detail=True)
