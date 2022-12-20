@@ -15,7 +15,7 @@ class PostFavoriteInline(admin.TabularInline):
     model = PostFavorite
 
 
-class CommentLikeInLine(admin.TabularInline):
+class CommentLikesInLine(admin.TabularInline):
     model = CommentLike
 
 
