@@ -7,7 +7,7 @@ from main.models import Post
 User = get_user_model()
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -15,16 +15,16 @@ class Comments(models.Model):
     post_id = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
 
 
-class PostLikes(models.Model):
+class PostLike(models.Model):
     user_id = models.ForeignKey(User, related_name='post_likes' , on_delete=models.CASCADE)
     post_id = models.ForeignKey(Post, related_name='likes', on_delete=models.CASCADE)
 
 
-class PostFavorites(models.Model):
+class PostFavorite(models.Model):
     user_id = models.ForeignKey(User, related_name='post_favorites' , on_delete=models.CASCADE)
     post_id = models.ForeignKey(Post, related_name='favorites', on_delete=models.CASCADE)
 
 
-class CommentsLikes(models.Model):
+class CommentLike(models.Model):
     user_id = models.ForeignKey(User, related_name='comment_likes', on_delete=models.CASCADE)
-    comment_id = models.ForeignKey(Comments, related_name='likes', on_delete=models.CASCADE)
+    comment_id = models.ForeignKey(Comment, related_name='likes', on_delete=models.CASCADE)
