@@ -21,7 +21,7 @@ class CommentLikesInLine(admin.TabularInline):
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ['title',]
-    list_filter = ['title', ]
+    list_filter = ['title',]
     search_fields = ['title',]
     inlines = [CommentInline]
 

@@ -10,5 +10,4 @@ router.register('music', MusicViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-   
 ]
