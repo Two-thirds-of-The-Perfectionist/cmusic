@@ -12,6 +12,17 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def average(self):
+        posts = Post.objects.filter(updated_at=self)
+        values = []
+        for post in posts:
+            values.append(post.average_rating)
+        if values:
+            return sum(values) / len(values)
+        return 0
+    
+
     def __str__(self):
         return f'{self.user_id.username} -> {self.description}'
 

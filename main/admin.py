@@ -20,9 +20,9 @@ class CommentLikesInLine(admin.TabularInline):
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['title',]
-    list_filter = ['post',]
-    search_fields = ['like_filter', 'post_filter']
+    list_display = ['title']
+    list_filter = ['post']
+    search_fields = ['post']
     inlines = [CommentInline]
 
 

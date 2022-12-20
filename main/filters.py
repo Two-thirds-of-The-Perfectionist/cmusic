@@ -4,6 +4,16 @@ import django_filters
 from review.models import PostLike
 from .models import Post
 
+
+class PostFilter(FilterSet):
+    post_filter = django_filters.DateTimeFilter(field_name='post__filter')
+
+
+    class Meta:
+        model = Post
+        fields = ['post_filter']
+
+
 class LikeFilter(FilterSet):
     like_filter = django_filters.CharFilter(field_name='like__filter')
     
@@ -13,10 +23,4 @@ class LikeFilter(FilterSet):
         fields = ['like_filter']
 
 
-class PostFilter(FilterSet):
-    post_filter = django_filters.DateTimeFilter(field_name='post__filter')
 
-
-    class Meta:
-        model = Post
-        fields = ['post_filter']
