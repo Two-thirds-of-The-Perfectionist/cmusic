@@ -1,16 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import PostViewSet, MusicViewSet #search
-from .models import PlayList
-# from main.views import delete_playlist, create_playlist
+from .views import PostViewSet, MusicViewSet 
 
 router = DefaultRouter()
 router.register('posts', PostViewSet)
-# router.register('playlist', PlayListViewSet)
 router.register('music', MusicViewSet)
 
 
 urlpatterns = [
     path('', include(router.urls)),
-    # path('search/', search),
+   
 ]

@@ -26,7 +26,6 @@ class PostViewSet(ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [IsAdminUser]
     filterset_class = PostFilter, LikeFilter
-    # filter_backends = [DjangoFilterBackend]
     
 
     def get_permissions(self):
@@ -35,27 +34,23 @@ class PostViewSet(ModelViewSet):
         return [IsAuthenticatedOrReadOnly()]
 
 
-    # @swagger_auto_schema(manual_parameters=[
-    #     openapi.Parameter('q', openapi.IN_QUERY, type=openapi.TYPE_STRING)
-    #     ])
-    # @action(['GET'], detail=False)
-    # def search(self, request):
-    #     q =request.query_params.get('q')
-    #     queryset = self.get_queryset() 
-    #     if q:
-    #         queryset = queryset.filter(Q(title__icontains=q) | Q(description__icontains=q)) 
-    #     pagination = self.paginate_queryset(queryset)
-    #     if pagination:
-    #         serializer = self.get_serializer(pagination, many=True)
-    #         return self.get_paginated_response(serializer.data)
-    #     serializer = self.get_serializer(queryset, many=True) 
-    #     return Response(serializer.data, status=200)
 
 
-# @api_view(['GET'])
-# def search(request):
-#     q = request.query_params.get('q')
-#     qs = Post.objects.filter(title__icontains=q)
-#     serializer = PostSerializer(qs, many=True)
-#     return Response(serializer.data, status=200)
 
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('q',openapi.IN_QUERY, type=openapi.TYPE_STRING)
+    ])
+    @action(['GET'], detail=False)
+    def search(self,requests):
+        q = requests.query_params.get('q')
+        queryset = self.get_queryset()
+        if q:
+            queryset = queryset.filter(Q(title__icontains=q) | Q(body__icontains=q))
+        pagination = self.paginate_queryset(queryset)
+        if pagination:
+            serializers = self.get_serializer(pagination, many=True)
+            return self.get_paginated_response(serializers.data)
+        serializers = self.get_serializer(queryset, many=True)
+        return Response(serializers.data, status=201)
+
+  
