@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from .models import Comment, CommentLike
 from .serializers import CommentSerializer
+from .permissions import IsAuthorOrReadOnly
 
 
 User = get_user_model()
@@ -28,3 +29,7 @@ class CommentViewSet(ModelViewSet):
             CommentLike.objects.create(comment_id=comment, user_id=user)
         
         return Response(status=201)
+    
+
+    def get_permissions(self):
+        return [IsAuthorOrReadOnly()]

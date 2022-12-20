@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -82,3 +83,7 @@ class PostViewSet(ModelViewSet):
 class MusicViewSet(ModelViewSet):
     queryset  = Music.objects.all().order_by('id')
     serializer_class = MusicSerializer
+
+
+    def get_permissions(self):
+        return [IsAuthenticatedOrReadOnly()]
