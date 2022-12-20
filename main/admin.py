@@ -21,8 +21,8 @@ class CommentLikesInLine(admin.TabularInline):
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ['title',]
-    list_filter = ['playlist',]
-    search_fields = ['like_filter', 'post_filter']
+    list_filter = ['title', ]
+    search_fields = ['title',]
     inlines = [CommentInline]
 
 
@@ -30,7 +30,7 @@ admin.site.register(Post, PostAdmin)
 admin.site.register(Music)
 admin.site.register(Playlist)
 admin.site.register(PostFavorite)
-# admin.site.register(Post)
+
 
 
 

@@ -4,16 +4,23 @@ from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django_filters.rest_framework import DjangoFilterBackend
+
+from rest_framework.decorators import api_view
 
 from .serializers import PostSerializer, MusicSerializer
 from .models import Post, Music
-from .filters import LikeFilter, PostFilter
+from .filters import PostFilter, LikeFilter
 from .permissions import IsAuthorOrReadOnly
 
-from review.models import PostLike, PostFavorite
+
+
+class MusicViewSet(ModelViewSet):
+    queryset  = Music.objects.all().order_by('id')
+    serializer_class = MusicSerializer
 
 
 User = get_user_model()
@@ -22,24 +29,31 @@ User = get_user_model()
 class PostViewSet(ModelViewSet):
     queryset  = Post.objects.all().order_by('id')
     serializer_class = PostSerializer
-    # filter_backends = [LikeFilter, PostFilter]
+    permission_classes = [IsAdminUser]
+    filterset_class = PostFilter, LikeFilter
+    
+
+    def get_permissions(self):
+        if self.action in ['retrieve', 'list', 'search']:
+            return []
+        return [IsAuthenticatedOrReadOnly()]
 
 
     @swagger_auto_schema(manual_parameters=[
-        openapi.Parameter('q', openapi.IN_QUERY, type=openapi.TYPE_STRING)
-        ])
+        openapi.Parameter('q',openapi.IN_QUERY, type=openapi.TYPE_STRING)
+    ])
     @action(['GET'], detail=False)
-    def search(self, request):
-        q =request.query_params.get('q')
-        qs = self.get_queryset() 
+    def search(self,requests):
+        q = requests.query_params.get('q')
+        queryset = self.get_queryset()
         if q:
-            qs = qs.filter(Q(title__icontains=q) | Q(description__icontains=q)) 
-        pagination = self.paginate_queryset(qs)
+            queryset = queryset.filter(Q(title__icontains=q) | Q(body__icontains=q))
+        pagination = self.paginate_queryset(queryset)
         if pagination:
-            serializer = self.get_serializer(pagination, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(qs, many=True) 
-        return Response(serializer.data, status=200)
+            serializers = self.get_serializer(pagination, many=True)
+            return self.get_paginated_response(serializers.data)
+        serializers = self.get_serializer(queryset, many=True)
+        return Response(serializers.data, status=201)
     
 
     @action(['POST'], detail=True)
