@@ -5,16 +5,18 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+
 from .serializers import PostSerializer, MusicSerializer
 from .models import Post, Music
 from .filters import LikeFilter, PostFilter
 
 from review.models import PostLike, PostFavorite
 
+
 class PostViewSet(ModelViewSet):
     queryset  = Post.objects.all().order_by('id')
     serializer_class = PostSerializer
-    filter_backends = [LikeFilter, PostFilter]
+    # filter_backends = [LikeFilter, PostFilter]
     
 
     def get_permissions(self):
@@ -48,4 +50,3 @@ class PostViewSet(ModelViewSet):
 class MusicViewSet(ModelViewSet):
     queryset  = Music.objects.all().order_by('id')
     serializer_class = MusicSerializer
-

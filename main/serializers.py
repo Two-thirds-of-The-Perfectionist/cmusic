@@ -9,7 +9,7 @@ class PostSerializer(ModelSerializer):
     
     def validate(self, attrs):
         attrs = super().validate(attrs)
-        request = self.context.get('request')  # получаем запрос из view
+        request = self.context.get('request')
         attrs['user_id'] = request.user
 
         return attrs
