@@ -48,6 +48,3 @@ class MusicViewSet(ModelViewSet):
     serializer_class = MusicSerializer
     permission_classes = [IsAdminUser]
 
-
-
-
