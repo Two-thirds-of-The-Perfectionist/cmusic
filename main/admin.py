@@ -1,35 +1,35 @@
 from django.contrib import admin
 from .models import Post, Music, PlayList
-from review.models import Comments, PostLikes, PostFavorites, CommentsLikes
+from review.models import Comment, PostLike, PostFavorite, CommentLike
 
 
-class CommentsInline(admin.TabularInline):
-    model = Comments
+class CommentInline(admin.TabularInline):
+    model = Comment
 
 
-class PostLikesInline(admin.TabularInline):
-    model = PostLikes
+class PostLikeInline(admin.TabularInline):
+    model = PostLike
 
 
-class PostFavoritesInline(admin.TabularInline):
-    model = PostFavorites
+class PostFavoriteInline(admin.TabularInline):
+    model = PostFavorite
 
 
-class CommentsLikesInLine(admin.TabularInline):
-    model = CommentsLikes
+class CommentLikesInLine(admin.TabularInline):
+    model = CommentLike
 
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ['title',]
     list_filter = ['post',]
     search_fields = ['like_filter', 'post_filter']
-    inlines = [CommentsInline]
+    inlines = [CommentInline]
 
 
 admin.site.register(Post, PostAdmin)
 admin.site.register(Music)
 admin.site.register(PlayList)
-admin.site.register(PostFavorites)
+admin.site.register(PostFavorite)
 # admin.site.register(Post)
 
 

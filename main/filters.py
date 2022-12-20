@@ -1,7 +1,7 @@
 from django_filters.rest_framework import FilterSet
 import django_filters
 
-from review.models import PostLikes
+from review.models import PostLike
 from .models import Post
 
 class LikeFilter(FilterSet):
@@ -9,7 +9,7 @@ class LikeFilter(FilterSet):
     
     
     class Meta:
-        model = PostLikes        
+        model = PostLike        
         fields = ['like_filter']
 
 
