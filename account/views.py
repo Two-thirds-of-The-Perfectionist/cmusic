@@ -28,3 +28,14 @@ def activate_view(request, activation_code):
 
     return Response("You appreciate this account", status=200)
 
+
+@api_view(['DELETE'])
+def delete_user(request, u_id):
+    user = get_object_or_404(User, id=u_id)
+
+    if user.id != request.user.id:
+        return Response('You cant delete this user', status=403)
+
+    user.delete()
+
+    return Response("User successfully deleted", status=204)
