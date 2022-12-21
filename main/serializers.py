@@ -4,13 +4,13 @@ from .models import Post, Playlist, Music
 class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
-        exclude = ('user_id',)
+        exclude = ('user',)
     
     
     def validate(self, attrs):
         attrs = super().validate(attrs)
         request = self.context.get('request')
-        attrs['user_id'] = request.user
+        attrs['user'] = request.user
 
         return attrs
     
@@ -25,6 +25,13 @@ class PlayListSerializer(ModelSerializer):
         model = Playlist
         fields = '__all__'
 
+
+    # def validate(self, attrs):
+    #     attrs = super().validate(attrs)
+    #     request = self.context.get('request')
+    #     attrs['user_id'] = request.user
+
+    #     return attrs
 
 
 class MusicSerializer(ModelSerializer):
