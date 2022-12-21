@@ -109,30 +109,30 @@ class PostViewSet(ModelViewSet):
         return Response(status=201)
 
 
-    @action(['PUT'], detail=True)
+    @action(['POST'], detail=True)
     def like(self, request, pk=None):
-        user_id = request.user.id
+        user_id = request.data.get('user')
         user = get_object_or_404(User, id=user_id)
         post = get_object_or_404(Post, id=pk)
 
-        if PostLike.objects.filter(post=post, user=user).exists():
-            PostLike.objects.filter(post=post, user=user).delete()
+        if PostLike.objects.filter(post_id=post, user_id=user).exists():
+            PostLike.objects.filter(post_id=post, user_id=user).delete()
         else:
-            PostLike.objects.create(post=post, user=user)
+            PostLike.objects.create(post_id=post, user_id=user)
 
         return Response(status=201)
 
 
-    @action(['PUT'], detail=True)
+    @action(['POST'], detail=True)
     def favorite(self, request, pk=None):
-        user_id = request.user.id
+        user_id = request.data.get('user')
         user = get_object_or_404(User, id=user_id)
         post = get_object_or_404(Post, id=pk)
 
-        if PostFavorite.objects.filter(post=post, user=user).exists():
-            PostFavorite.objects.filter(post=post, user=user).delete()
+        if PostFavorite.objects.filter(post_id=post, user_id=user).exists():
+            PostFavorite.objects.filter(post_id=post, user_id=user).delete()
         else:
-            PostFavorite.objects.create(post=post, user=user)
+            PostFavorite.objects.create(post_id=post, user_id=user)
 
         return Response(status=201)
 

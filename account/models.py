@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager 
 
+from .utils import send_activation_mail
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -16,8 +18,9 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, username=username, **kwargs)
         user.set_password(password)
+        user.create_activation_code()
         user.save(using=self._db)
-        user.send_activation_code()
+        send_activation_mail(user.email, user.activation_code)
 
         return user
     
@@ -53,13 +56,3 @@ class User(AbstractUser):
         code = get_random_string(length=8, allowed_chars='qwertyuiopasdfghjklzxcvbnmQWERTYUIOASDFGHJKLZXCVBNM234567890')
         self.activation_code = code
         self.save()
-    
-
-    def send_activation_code(self):
-        from django.core.mail import send_mail
-
-
-        self.create_activation_code()
-        activation_link = f'http://localhost:8000/account/activate/{self.activation_code}'
-        message = f'Activate your account with a link:\n{activation_link}'
-        send_mail("Activate account", message, 'admin@admin.com', recipient_list=[self.email], fail_silently=False)

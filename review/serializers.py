@@ -6,7 +6,7 @@ from .models import Comment
 class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        exclude = ('user',)
+        exclude = ('user',) 
 
 
     def validate(self, attrs):
@@ -15,10 +15,3 @@ class CommentSerializer(ModelSerializer):
         attrs['user'] = request.user
 
         return attrs
-    
-
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        rep['likes'] = instance.likes.count()
-
-        return rep
