@@ -6,7 +6,7 @@ from .models import Comment
 class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        exclude = ('user',) 
+        exclude = ('user',)
 
 
     def validate(self, attrs):
