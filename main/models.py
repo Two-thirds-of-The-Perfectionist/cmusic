@@ -4,13 +4,14 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class Post(models.Model):
-    user = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
     title = models.CharField(max_length=24)
     description = models.TextField()
     cover = models.ImageField(upload_to='post_cover', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
 
 
     @property
@@ -29,6 +30,7 @@ class Music(models.Model):
     author = models.CharField(max_length=24)
     title = models.CharField(max_length=24)
     cover = models.ImageField(upload_to='music_cover')
+    user = models.ForeignKey(User, related_name='music', on_delete=models.CASCADE)
 
 
 class Playlist(models.Model):

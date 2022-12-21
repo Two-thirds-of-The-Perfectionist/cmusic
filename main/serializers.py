@@ -31,4 +31,12 @@ class PlayListSerializer(ModelSerializer):
 class MusicSerializer(ModelSerializer):
     class Meta:
         model = Music
-        fields = '__all__'
+        exclude = ('user',)
+
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        request = self.context.get('request')
+        attrs['user'] = request.user
+
+        return attrs
