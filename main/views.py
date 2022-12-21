@@ -1,18 +1,16 @@
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework.decorators import api_view
-
-from .serializers import PostSerializer, MusicSerializer
-from .models import Post, Music
+from .serializers import PostSerializer, MusicSerializer, PlayListSerializer
+from .models import Post, Music, Playlist
 from .filters import PostFilter, LikeFilter
 from .permissions import IsAuthorOrReadOnly
 
@@ -20,6 +18,15 @@ from review.models import PostLike, PostFavorite
 
 
 User = get_user_model()
+
+
+class MusicViewSet(ModelViewSet):
+    queryset  = Music.objects.all().order_by('id')
+    serializer_class = MusicSerializer
+
+
+    def get_permissions(self):
+        return [IsAuthenticatedOrReadOnly()]
 
 
 class PostViewSet(ModelViewSet):
@@ -47,6 +54,17 @@ class PostViewSet(ModelViewSet):
     
 
     @action(['POST'], detail=True)
+    def playlist(self, request, pk=None):
+        request.data._mutable = True
+        request.data.update({'post': pk})
+        serializer = PlayListSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(status=201)
+
+
+    @action(['POST'], detail=True)
     def like(self, request, pk=None):
         user_id = request.data.get('user')
         user = get_object_or_404(User, id=user_id)
@@ -72,21 +90,9 @@ class PostViewSet(ModelViewSet):
             PostFavorite.objects.create(post_id=post, user_id=user)
 
         return Response(status=201)
+    
 
 
-    def get_permissions(self):
-        return [IsAuthorOrReadOnly()]
-
-
-# class PlayListViewSet(ModelViewSet):
-#     queryset  = PlayList.objects.all().order_by('id')
-#     serializer_class = PlayListSerializer
-#     permission_classes = [IsAdminUser]
-
-
-class MusicViewSet(ModelViewSet):
-    queryset  = Music.objects.all().order_by('id')
-    serializer_class = MusicSerializer
 
 
     # @swagger_auto_schema(manual_parameters=[
@@ -118,4 +124,4 @@ class MusicViewSet(ModelViewSet):
 
 
     def get_permissions(self):
-        return [IsAuthenticatedOrReadOnly()]
+        return [IsAuthorOrReadOnly()]
