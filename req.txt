@@ -6,3 +6,4 @@ djangorestframework-simplejwt
 django-filter
 drf-yasg
 pillow
+social-auth-app-django

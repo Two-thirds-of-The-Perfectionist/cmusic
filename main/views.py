@@ -84,17 +84,31 @@ class PostViewSet(ModelViewSet):
 #     permission_classes = [IsAdminUser]
 
 
-class MusicViewSet(ModelViewSet):
-    queryset  = Music.objects.all().order_by('id')
-    serializer_class = MusicSerializer
+@api_view(['GET'])
+def get_music(request):
+    queryset = Music.objects.all().order_by('id')
+    serializer = MusicSerializer(queryset, many=True)
+
+    return Response(serializer.data, status=200)
 
 
-    def get_permissions(self):
-        return [IsAuthenticatedOrReadOnly()]
+@api_view(['POST'])
+def create_music(request):
+    serializer = MusicSerializer(data=request.data)
+
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+    
+    return Response(status=201)
 
 
-    @action(['PATCH'], detail=False)
-    def patch(self, request, pk=None):
-        user_id = request.data.get('user')
-        user = get_object_or_404(User, id=user_id)
-        music = get_object_or_404(Music, id=pk)
+@api_view(['DELETE'])
+def delete_music(request, id):
+    music = get_object_or_404(Music, id=id)
+    music.delete()
+
+    return Response(status=204)
+
+
+# def get_permissions(self):
+#     return [IsAuthenticatedOrReadOnly()]
