@@ -6,7 +6,7 @@ User = get_user_model()
 
 class Post(models.Model):
     user = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
-    title = models.CharField(max_length=250)
+    title = models.CharField(max_length=24)
     description = models.TextField()
     cover = models.ImageField(upload_to='post_cover', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,7 +26,8 @@ class Post(models.Model):
 
 class Music(models.Model):
     music = models.FileField(upload_to='music')
-    title = models.CharField(max_length=250)
+    author = models.CharField(max_length=24)
+    title = models.CharField(max_length=24)
     cover = models.ImageField(upload_to='music_cover')
 
 

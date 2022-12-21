@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 from drf_yasg.utils import swagger_auto_schema
@@ -20,13 +20,58 @@ from review.models import PostLike, PostFavorite
 User = get_user_model()
 
 
-class MusicViewSet(ModelViewSet):
-    queryset  = Music.objects.all().order_by('id')
-    serializer_class = MusicSerializer
+@api_view(['GET'])
+def get_music(request):
+    queryset = Music.objects.all().order_by('id')
+    serializer = MusicSerializer(queryset, many=True)
+
+    return Response(serializer.data, status=200)
 
 
-    def get_permissions(self):
-        return [IsAuthenticatedOrReadOnly()]
+@api_view(['POST'])
+def create_music(request):
+    serializer = MusicSerializer(data=request.data)
+
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+    
+    return Response(status=201)
+
+
+@api_view(['DELETE'])
+def delete_music(request, id):
+    music = get_object_or_404(Music, id=id)
+    music.delete()
+
+    return Response(status=204)
+
+
+# class MusicViewSet(ModelViewSet):
+#     queryset  = Music.objects.all().order_by('id')
+#     serializer_class = MusicSerializer
+
+
+    # @swagger_auto_schema(manual_parameters=[
+    #     openapi.Parameter('q',openapi.IN_QUERY, type=openapi.TYPE_STRING)
+    # ])
+    # @action(['GET'], detail=False)
+    # def search(request):
+    #     q = request.query_params.get('q')
+    #     qs = Post.objects.filter(body__icontains=q)
+    #     serializer = PostSerializer(qs, many=True)
+
+    #     return Response(serializer.data, status=200)
+
+
+    # @action(['PATCH'], detail=False)
+    # def patch(self, request, pk=None):
+    #     user_id = request.data.get('user')
+    #     user = get_object_or_404(User, id=user_id)
+    #     music = get_object_or_404(Music, id=pk)
+
+
+    # def get_permissions(self):
+    #     return [IsAuthenticatedOrReadOnly()]
 
 
 class PostViewSet(ModelViewSet):
@@ -90,9 +135,6 @@ class PostViewSet(ModelViewSet):
             PostFavorite.objects.create(post_id=post, user_id=user)
 
         return Response(status=201)
-    
-
-
 
 
     def get_permissions(self):
