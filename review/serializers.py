@@ -15,3 +15,10 @@ class CommentSerializer(ModelSerializer):
         attrs['user'] = request.user
 
         return attrs
+    
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['likes'] = instance.likes.count()
+
+        return rep

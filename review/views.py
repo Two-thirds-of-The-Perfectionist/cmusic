@@ -42,17 +42,17 @@ class CommentViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
 
 
-    @action(['POST'], detail=True)
-    def like(self, request, pk=None):
-        user_id = request.data.get('user')
+    @action(['PUT'], detail=True)
+    def like(self, request, post_pk, pk=None):
+        user_id = request.user.id
         user = get_object_or_404(User, id=user_id)
         comment = get_object_or_404(Comment, id=pk)
-        
-        if CommentLike.objects.filter(comment_id=comment, user_id=user).exists():
-            CommentLike.objects.filter(comment_id=comment, user_id=user).delete()
+
+        if CommentLike.objects.filter(comment=comment, user=user).exists():
+            CommentLike.objects.filter(comment=comment, user=user).delete()
         else:
-            CommentLike.objects.create(comment_id=comment, user_id=user)
-        
+            CommentLike.objects.create(comment=comment, user=user)
+
         return Response(status=201)
     
 
