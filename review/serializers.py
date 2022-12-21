@@ -6,12 +6,12 @@ from .models import Comment
 class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        exclude = ('user_id',) 
+        exclude = ('user',) 
 
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
         request = self.context.get('request')
-        attrs['user_id'] = request.user
+        attrs['user'] = request.user
 
         return attrs
