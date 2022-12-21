@@ -7,9 +7,9 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(min_length=6, required=True)
 
 
-    # class Meta:
-    #     model = User
-    #     fields = ('email', 'username', 'password', 'password_confirm')
+    class Meta:
+        model = User
+        fields = ('email', 'username', 'password', 'password_confirm')
     
 
     def validate(self, attrs):
@@ -40,14 +40,22 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
-class NewPasswordSerializer(serializers.Serializer):
+class NewPasswordSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(max_length=150, required=True)
+    activation_code = serializers.CharField(max_length=8, min_length=8, required=True)
     password = serializers.CharField(min_length=4, required=True)
     password_confirm = serializers.CharField(min_length=4, required=True)
 
 
     class Meta:
         model = User
-        fields = ('password', 'password_confirm')
+        fields = ('email', 'activation_code', 'password', 'password_confirm')
+
+
+    def validate_email(self, email):
+        if not User.objects.filter(email=email).exists():
+            raise serializers.ValidationError('Пользователя с таким email не найден')
+        return email
 
 
     def validate(self, attrs):
@@ -58,3 +66,18 @@ class NewPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError("Password don't match")
         
         return attrs
+    
+
+    def save(self, **kwargs):
+        data = self.validated_data
+        email = data.get('email')
+        password = data.get('password')
+        try:
+            user = User.objects.get(email=email)
+            if not user:
+                raise serializers.ValidationError('Пользователь не найден')
+        except User.DoesNotExist:
+            raise serializers.ValidationError('Пользователь не найден')
+        user.set_password(password)
+        user.save()
+        return user

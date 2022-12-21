@@ -55,16 +55,15 @@ class ForgotPassword(APIView):
         return Response('send_mail' ,status=200)
 
 
-class ForgotPasswordAccept(APIView):
+@api_view(['POST'])
+def new_password_post(request, activation_code):
+    user = get_object_or_404(User, activation_code=activation_code)
+    user.activation_code = None
+    user.is_active = True
+    user.save()
+    ser = NewPasswordSerializer(data=request.data)
 
-    def post(self, request, activation_code):
-        user = get_object_or_404(User, activation_code=activation_code)
-        user.activation_code = None
-        user.is_active = True
-        user.save()
-        ser = NewPasswordSerializer(data=request.data)
+    if ser.is_valid(raise_exception=True):
+        ser.save()
 
-        if ser.is_valid(raise_exception=True):
-            ser.save()
-
-            return Response('Your password successfully update', status=200)
+        return Response('Your password successfully update', status=200)
