@@ -114,10 +114,7 @@ class UserSerializer(serializers.ModelSerializer):
         rep = super().to_representation(instance)
         
         rep['rating'] = instance.rating
-
-        # if SubscriptionSerializer(instance.subscribers.all(), many=True).data != User.id:
         rep['subscribers'] = SubscriberSerializer(instance.subscribers.all(), many=True).data
-        # if SubscriptionSerializer(instance.subscriptions.all(), many=True).data != User.id:
         rep['subscriptions'] = SubscribeSerializer(instance.subscriptions.all(), many=True).data
 
         return rep

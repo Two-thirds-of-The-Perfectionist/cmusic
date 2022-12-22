@@ -18,5 +18,4 @@ urlpatterns = [
     path('accept/<str:activation_code>/', new_password_post),
     path('subscribe/', subscribe),
     path('subs/', list_subs),
-    path('', list_user),
 ]

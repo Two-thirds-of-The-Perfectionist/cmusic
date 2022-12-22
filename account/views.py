@@ -93,11 +93,3 @@ def list_subs(request):
     serializer = SubscriptionSerializer(queryset, many=True)
 
     return Response(serializer.data, status=200)
-
-
-@api_view(['GET'])
-def list_user(request):
-    queryset = User.objects.all().order_by('id')
-    serializer = UserSerializer(queryset, many=True)
-
-    return Response(serializer.data, status=200)
