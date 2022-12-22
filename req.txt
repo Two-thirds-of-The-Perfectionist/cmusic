@@ -4,6 +4,7 @@ python-decouple
 djangorestframework
 djangorestframework-simplejwt
 django-filter
+django-allauth
 drf-nested-routers
 drf-yasg
 pillow
