@@ -6,3 +6,6 @@ djangorestframework-simplejwt
 django-filter
 drf-yasg
 pillow
+celery==5.1.2
+flower==1.0.0
+redis==3.5.3

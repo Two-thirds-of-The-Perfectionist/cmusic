@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import RegisterUserSerializer, NewPasswordSerializer
-from .models import User
+from .serializers import RegisterUserSerializer, NewPasswordSerializer, SubscriptionSerializer, UserSerializer
+from .models import User, Subscription
 from .utils import send_activation_mail, send_activation_code
 
 
@@ -67,3 +67,29 @@ def new_password_post(request, activation_code):
         ser.save()
 
         return Response('Your password successfully update', status=200)
+
+
+@api_view(['GET'])
+def list_user(request):
+    queryset = User.objects.all().order_by('id')
+    serializer = UserSerializer(queryset, many=True)
+
+    return Response(serializer.data, status=200)
+
+
+@api_view(['POST'])
+def subscribe(request):
+    serializer = SubscriptionSerializer(data=request.data)
+
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+    
+    return Response(status=201)
+
+
+@api_view(['GET'])
+def list_subs(request):
+    queryset = Subscription.objects.all().order_by('id')
+    serializer = SubscriptionSerializer(queryset, many=True)
+
+    return Response(serializer.data, status=200)

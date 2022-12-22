@@ -56,3 +56,8 @@ class User(AbstractUser):
         code = get_random_string(length=8, allowed_chars='qwertyuiopasdfghjklzxcvbnmQWERTYUIOASDFGHJKLZXCVBNM234567890')
         self.activation_code = code
         self.save()
+
+
+class Subscription(models.Model):
+    subscribe_id = models.ForeignKey(User, related_name='subscripes', on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, related_name='subscribers', on_delete=models.CASCADE)
