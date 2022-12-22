@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User
+from .models import User, Subscription
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -83,15 +83,41 @@ class NewPasswordSerializer(serializers.Serializer):
         return user
 
 
+class SubscriptionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Subscription
+        fields = '__all__'
+
+
+class SubscribeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Subscription
+        fields = ('user_id',)
+
+
+class SubscriberSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Subscription
+        fields = ('subscribe_id',)
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'is_staff')
-    
+
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
+        
         rep['rating'] = instance.rating
 
+        # if SubscriptionSerializer(instance.subscribers.all(), many=True).data != User.id:
+        rep['subscribers'] = SubscriberSerializer(instance.subscribers.all(), many=True).data
+        # if SubscriptionSerializer(instance.subscriptions.all(), many=True).data != User.id:
+        rep['subscriptions'] = SubscribeSerializer(instance.subscriptions.all(), many=True).data
 
         return rep

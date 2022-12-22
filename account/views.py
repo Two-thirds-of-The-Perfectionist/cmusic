@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import RegisterUserSerializer, UserSerializer, NewPasswordSerializer
-from .models import User
+from .serializers import RegisterUserSerializer, UserSerializer, NewPasswordSerializer, SubscriptionSerializer
+from .models import User, Subscription
 from .utils import send_activation_mail, send_activation_code
 
 
@@ -73,5 +73,31 @@ def delete_user(request, id):
 def details_user(request, id):
     user = get_object_or_404(User, id=id)
     serializer = UserSerializer(user)
+
+    return Response(serializer.data, status=200)
+
+
+@api_view(['POST'])
+def subscribe(request):
+    serializer = SubscriptionSerializer(data=request.data)
+
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+
+    return Response(status=201)
+
+
+@api_view(['GET'])
+def list_subs(request):
+    queryset = Subscription.objects.all().order_by('id')
+    serializer = SubscriptionSerializer(queryset, many=True)
+
+    return Response(serializer.data, status=200)
+
+
+@api_view(['GET'])
+def list_user(request):
+    queryset = User.objects.all().order_by('id')
+    serializer = UserSerializer(queryset, many=True)
 
     return Response(serializer.data, status=200)
