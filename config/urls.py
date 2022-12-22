@@ -14,9 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
@@ -33,7 +35,10 @@ swagger_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('docs/', swagger_view.with_ui('swagger', cache_timeout=0)),
-    path('account/', include('account.urls')),
+    path('account/', include('book.urls')),
+    path('', TemplateView.as_view(template_name="index.html")),
+    path('', include('allauth.urls')),
+    path('logout', LogoutView.as_view()),
     path('', include('main.urls')),
     path('', include('review.urls')),
 ]
