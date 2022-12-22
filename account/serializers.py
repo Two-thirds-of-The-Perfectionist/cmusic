@@ -38,3 +38,17 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'is_staff')
+    
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['rating'] = instance.rating
+
+
+        return rep

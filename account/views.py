@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import RegisterUserSerializer
+from .serializers import RegisterUserSerializer, UserSerializer
 from .models import User
 
 
@@ -30,8 +30,8 @@ def activate_view(request, activation_code):
 
 
 @api_view(['DELETE'])
-def delete_user(request, u_id):
-    user = get_object_or_404(User, id=u_id)
+def delete_user(request, id):
+    user = get_object_or_404(User, id=id)
 
     if user.id != request.user.id:
         return Response('You cant delete this user', status=403)
@@ -39,3 +39,11 @@ def delete_user(request, u_id):
     user.delete()
 
     return Response("User successfully deleted", status=204)
+
+
+@api_view(['GET'])
+def details_user(request, id):
+    user = get_object_or_404(User, id=id)
+    serializer = UserSerializer(user)
+
+    return Response(serializer.data, status=200)

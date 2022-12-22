@@ -27,7 +27,6 @@ class CommentViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         request.data._mutable = True
         request.data.update({'post': self.kwargs['post_pk']})
-        print(request.data)
 
         return super().create(request, *args, **kwargs)
     

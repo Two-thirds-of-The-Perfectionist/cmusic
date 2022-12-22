@@ -14,17 +14,6 @@ class Post(models.Model):
     user = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
 
 
-    @property
-    def average(self):
-        posts = Post.objects.filter(updated_at=self)
-        values = []
-        for post in posts:
-            values.append(post.average_rating)
-        if values:
-            return sum(values) / len(values)
-        return 0
-
-
 class Music(models.Model):
     music = models.FileField(upload_to='music')
     author = models.CharField(max_length=24)
