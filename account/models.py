@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.base_user import BaseUserManager 
+from django.contrib.auth.base_user import BaseUserManager
 
 
 class UserManager(BaseUserManager):
@@ -39,6 +39,32 @@ class User(AbstractUser):
     username = models.CharField(max_length=24, unique=True)
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=8, null=True)
+
+
+    def likes(self):
+        posts = self.posts.all()
+        likes_count = 0
+
+        for post in posts:
+            likes_count += post.likes.count()
+        
+        return likes_count
+
+
+    @property
+    def rating(self):
+        users = User.objects.all()
+        ratings = []
+
+        for user in users:
+           ratings.append((user.likes(), user))
+        
+        ratings.sort(reverse=True)
+        
+        for r in ratings:
+            if self in r:
+                return ratings.index(r) + 1
+
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
