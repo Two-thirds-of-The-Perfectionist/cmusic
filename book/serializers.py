@@ -93,6 +93,18 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
         fields = '__all__'
+    
+
+    def validate(self, attrs):
+        user_id = attrs.get('user')
+        subs_id = attrs.get('subscribe')
+
+        if Subscription.objects.filter(user=user_id, subscribe=subs_id).exists():
+            Subscription.objects.filter(user=user_id, subscribe=subs_id).delete()
+        else:
+            Subscription.objects.create(user=user_id, subscribe=subs_id)
+        
+        return attrs
 
 
 class SubscribeSerializer(serializers.ModelSerializer):

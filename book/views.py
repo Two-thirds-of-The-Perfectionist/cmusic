@@ -81,7 +81,7 @@ def details_user(request, id):
 def subscribe(request):
     serializer = SubscriptionSerializer(data=request.data)
 
-    if serializer.is_valid(raise_exception=True):
+    if not serializer.is_valid(raise_exception=True):
         serializer.save()
 
     return Response(status=201)
