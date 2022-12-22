@@ -83,17 +83,7 @@ class User(AbstractUser):
         self.activation_code = code
         self.save()
     
-
-    def send_activation_code(self):
-        from django.core.mail import send_mail
-
-
-        self.create_activation_code()
-        activation_link = f'http://localhost:8000/account/activate/{self.activation_code}'
-        message = f'Activate your account with a link:\n{activation_link}'
-        send_mail("Activate account", message, 'admin@admin.com', recipient_list=[self.email], fail_silently=False)
-
-
+    
 class Subscription(models.Model):
     subscribe = models.ForeignKey(User, related_name='subscriptions', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='subscribers', on_delete=models.CASCADE)

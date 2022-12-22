@@ -72,14 +72,19 @@ class NewPasswordSerializer(serializers.Serializer):
         data = self.validated_data
         email = data.get('email')
         password = data.get('password')
+
         try:
             user = User.objects.get(email=email)
+        
             if not user:
                 raise serializers.ValidationError('Пользователь не найден')
+        
         except User.DoesNotExist:
             raise serializers.ValidationError('Пользователь не найден')
+        
         user.set_password(password)
         user.save()
+        
         return user
 
 
