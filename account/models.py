@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 
+from .utils import send_activation_mail
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -16,8 +18,9 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, username=username, **kwargs)
         user.set_password(password)
+        user.create_activation_code()
         user.save(using=self._db)
-        user.send_activation_code()
+        send_activation_mail(user.email, user.activation_code)
 
         return user
     
