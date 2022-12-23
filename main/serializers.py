@@ -30,6 +30,7 @@ class PlayListSerializer(ModelSerializer):
 
 
 class MusicSerializer(ModelSerializer):
+    
     class Meta:
         model = Music
         exclude = ('user',)
