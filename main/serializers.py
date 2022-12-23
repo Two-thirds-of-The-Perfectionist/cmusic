@@ -5,7 +5,7 @@ from .models import Post, Playlist, Music
 class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
-        exclude = ('user', 'id')
+        exclude = ('user',)
     
     
     def validate(self, attrs):
@@ -20,6 +20,7 @@ class PostSerializer(ModelSerializer):
         rep = super().to_representation(instance)
         rep['likes'] = instance.likes.count()
         rep['author'] = instance.user.username
+        rep['playlist'] = PlayListSerializer(instance.playlist.all(), many=True).data
 
         return rep
 
@@ -27,7 +28,14 @@ class PostSerializer(ModelSerializer):
 class PlayListSerializer(ModelSerializer):
     class Meta:
         model = Playlist
-        fields = '__all__'
+        fields = ('post', 'music')
+
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['music'] = MusicSerializer(instance.music).data
+
+        return rep
 
 
 class MusicSerializer(ModelSerializer):
