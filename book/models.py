@@ -42,6 +42,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=24, unique=True)
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=8, null=True)
+    # picture = models.ImageField(upload_to='profile_picture', default='media_default.profile_picture')
 
 
     def likes(self):
@@ -60,9 +61,9 @@ class User(AbstractUser):
         ratings = []
 
         for user in users:
-           ratings.append((user.likes(), user))
+           ratings.append((user, user.likes()))
         
-        ratings.sort(reverse=True)
+        ratings.sort(key=lambda x: x[1], reverse=True)
         
         for r in ratings:
             if self in r:

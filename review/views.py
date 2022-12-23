@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
-from rest_framework.exceptions import NotAcceptable
+from rest_framework.exceptions import NotAcceptable, NotAuthenticated
 
-from .models import Comment, CommentLike
-from .serializers import CommentSerializer
+from .models import Comment, CommentLike, PostFavorite
+from .serializers import CommentSerializer, PostFavoriteSerializer
 from .permissions import IsAuthorOrReadOnly
 
 from main.models import Post
@@ -57,3 +57,14 @@ class CommentViewSet(ModelViewSet):
 
     def get_permissions(self):
         return [IsAuthorOrReadOnly()]
+
+
+@api_view(['GET'])
+def favorites_list(request):
+    if not request.user.is_authenticated:
+        raise NotAuthenticated(detail='Authentication required')
+
+    queryset = PostFavorite.objects.filter(user=request.user)
+    serializer = PostFavoriteSerializer(queryset, many=True)
+
+    return Response(serializer.data, status=200)

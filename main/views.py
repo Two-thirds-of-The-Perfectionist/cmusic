@@ -11,8 +11,8 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from .serializers import PostSerializer, MusicSerializer, PlayListSerializer
-from .models import Post, Music, Playlist
-from .filters import PostFilter, LikeFilter
+from .models import Post, Music
+from .filters import PostFilter
 from .permissions import IsAuthorOrReadOnly
 
 from review.models import PostLike, PostFavorite
@@ -35,14 +35,27 @@ class MusicViewSet(ModelViewSet):
         return super().update(request, *args, **kwargs)
 
 
-    @swagger_auto_schema(manual_parameters=[
-        openapi.Parameter('q',openapi.IN_QUERY, type=openapi.TYPE_STRING)
-    ])
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('q', openapi.IN_QUERY, type=openapi.TYPE_STRING),
+        ]
+    )
     @action(['GET'], detail=False)
-    def search(request):
+    def search(self, request):
         q = request.query_params.get('q')
-        qs = Post.objects.filter(body__icontains=q)
-        serializer = PostSerializer(qs, many=True)
+        queryset = self.get_queryset()
+
+        if q:
+            queryset = queryset.filter(Q(author__icontains=q) | Q(title__icontains=q))
+        
+        pagination = self.paginate_queryset(queryset)
+
+        if pagination:
+            serializer = self.get_serializer(pagination, many=True)
+            
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
 
         return Response(serializer.data, status=200)
 
@@ -54,29 +67,43 @@ class MusicViewSet(ModelViewSet):
 class PostViewSet(ModelViewSet):
     queryset  = Post.objects.all().order_by('id')
     serializer_class = PostSerializer
-    # permission_classes = [IsAdminUser]
-    # filterset_class = PostFilter, LikeFilter
+    filterset_class = PostFilter
     
 
-    @swagger_auto_schema(manual_parameters=[
-        openapi.Parameter('q',openapi.IN_QUERY, type=openapi.TYPE_STRING)
-    ])
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('q', openapi.IN_QUERY, type=openapi.TYPE_STRING),
+        ]
+    )
     @action(['GET'], detail=False)
-    def search(self,requests):
-        q = requests.query_params.get('q')
+    def search(self, request):
+        q = request.query_params.get('q')
         queryset = self.get_queryset()
+
         if q:
             queryset = queryset.filter(Q(title__icontains=q) | Q(description__icontains=q))
+        
         pagination = self.paginate_queryset(queryset)
+
         if pagination:
-            serializers = self.get_serializer(pagination, many=True)
-            return self.get_paginated_response(serializers.data)
-        serializers = self.get_serializer(queryset, many=True)
-        return Response(serializers.data, status=201)
-    
+            serializer = self.get_serializer(pagination, many=True)
+            
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+
+        return Response(serializer.data, status=200)
+
 
     @action(['POST'], detail=True)
     def playlist(self, request, pk=None):
+        post = get_object_or_404(Post, id=pk)
+        # print(post.user)
+        # print(request.user)
+
+        if post.user != request.user:
+            raise NotAcceptable('Недостаточно прав')
+
         request.data._mutable = True
         request.data.update({'post': pk})
         serializer = PlayListSerializer(data=request.data)

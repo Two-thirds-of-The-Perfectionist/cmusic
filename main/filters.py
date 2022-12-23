@@ -1,26 +1,13 @@
 from django_filters.rest_framework import FilterSet
 import django_filters
 
-from review.models import PostLike
 from .models import Post
 
 
 class PostFilter(FilterSet):
-    post_filter = django_filters.DateTimeFilter(field_name='post__filter')
+    created_at = django_filters.DateTimeFilter(field_name='created_at')
 
 
     class Meta:
         model = Post
-        fields = ['post_filter']
-
-
-class LikeFilter(FilterSet):
-    like_filter = django_filters.CharFilter(field_name='like__filter')
-    
-    
-    class Meta:
-        model = PostLike
-        fields = ['like_filter']
-
-
-
+        fields = ['created_at']

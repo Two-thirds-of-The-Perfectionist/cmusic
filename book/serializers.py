@@ -96,13 +96,13 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     
 
     def validate(self, attrs):
-        user_id = attrs.get('user')
-        subs_id = attrs.get('subscribe')
+        user = attrs.get('user')
+        subs = attrs.get('subscribe')
 
-        if Subscription.objects.filter(user=user_id, subscribe=subs_id).exists():
-            Subscription.objects.filter(user=user_id, subscribe=subs_id).delete()
+        if Subscription.objects.filter(user=user, subscribe=subs).exists():
+            Subscription.objects.filter(user=user, subscribe=subs).delete()
         else:
-            Subscription.objects.create(user=user_id, subscribe=subs_id)
+            Subscription.objects.create(user=user, subscribe=subs)
         
         return attrs
 
