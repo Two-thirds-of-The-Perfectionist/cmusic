@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'main',
     'review',
     'oauth_app',
+    'chat',
 
     'allauth',
     'allauth.account',
