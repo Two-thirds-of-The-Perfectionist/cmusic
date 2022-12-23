@@ -1,22 +1,10 @@
 from django.contrib import admin
-from .models import Post, Music, Playlist
-from review.models import Comment, PostLike, PostFavorite, CommentLike
+from .models import Post, Music
+from review.models import Comment
 
 
 class CommentInline(admin.TabularInline):
     model = Comment
-
-
-class PostLikeInline(admin.TabularInline):
-    model = PostLike
-
-
-class PostFavoriteInline(admin.TabularInline):
-    model = PostFavorite
-
-
-class CommentLikesInLine(admin.TabularInline):
-    model = CommentLike
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -28,10 +16,3 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Post, PostAdmin)
 admin.site.register(Music)
-admin.site.register(Playlist)
-admin.site.register(PostFavorite)
-
-
-
-
-

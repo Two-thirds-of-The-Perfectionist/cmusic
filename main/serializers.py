@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from .models import Post, Playlist, Music
 
+
 class PostSerializer(ModelSerializer):
     class Meta:
         model = Post

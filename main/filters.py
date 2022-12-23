@@ -1,8 +1,8 @@
 from django_filters.rest_framework import FilterSet
 import django_filters
 
-from review.models import PostLike
 from .models import Post
+from review.models import PostLike
 
 
 class PostFilter(FilterSet):
@@ -21,6 +21,3 @@ class LikeFilter(FilterSet):
     class Meta:
         model = PostLike
         fields = ['like_filter']
-
-
-
