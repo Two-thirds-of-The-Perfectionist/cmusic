@@ -39,3 +39,5 @@ def getMessages(request, room):
     room_details = get_object_or_404(Room , name=room)
     messages = Message.objects.filter(room=room_details.id)
     return JsonResponse({"messages":list(messages.values())})
+
+    
