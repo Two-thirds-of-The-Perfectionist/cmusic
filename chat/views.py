@@ -1,49 +1,41 @@
-from django.contrib.auth import get_user_model                           # Django Build in User Model
-from django.http.response import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
-from chat.models import Message                                                   # Our Message model
-from chat.serializers import MessageSerializer, UserSerializer # Our Serializer Classes
-# Users View
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse, HttpResponse
+from chat.models import Room, Message
+
+def home(request):
+    return render(request, 'home.html')
+
+def room(request, room):
+    username = request.GET.get('username')
+    print(room)
+    print(Room.objects.filter(name=room))
+    room_details = get_object_or_404(Room , name=room)
+    return render(request, 'room.html', {
+        'username':username,
+        'room':room,
+        'room_details':room_details}
+        )
 
 
-User = get_user_model()
+def checkview(request):
+    room = request.POST['room_name']
+    username = request.POST['username']
 
+    if not Room.objects.filter(name=room).exists():
+        new_room = Room.objects.create(name=room)
+        new_room.save()
+    return redirect(room+'/?username='+username)
 
-@csrf_exempt                                                              # Decorator to make the view csrf excempt.
-def user_list(request, pk=None):
-    """
-    List all required messages, or create a new message.
-    """
-    if request.method == 'GET':
-        if pk:                                                                      # If PrimaryKey (id) of the user is specified in the url
-            users = User.objects.filter(id=pk)              # Select only that particular user
-        else:
-            users = User.objects.all()                             # Else get all user list
-        serializer = UserSerializer(users, many=True, context={'request': request}) 
-        return JsonResponse(serializer.data, safe=False)               # Return serialized data
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)           # On POST, parse the request object to obtain the data in json
-        serializer = UserSerializer(data=data)        # Seraialize the data
-        if serializer.is_valid():
-            serializer.save()                                            # Save it if valid
-            return JsonResponse(serializer.data, status=201)     # Return back the data on success
-        return JsonResponse(serializer.errors, status=400)  
+def send(request):
+    message = request.POST['message']
+    username = request.POST['username']
+    room_id = request.POST['room_id']
 
-        
-@csrf_exempt
-def message_list(request, sender=None, receiver=None):
-    """
-    List all required messages, or create a new message.
-    """
-    if request.method == 'GET':
-        messages = Message.objects.filter(sender_id=sender, receiver_id=receiver)
-        serializer = MessageSerializer(messages, many=True, context={'request': request})
-        return JsonResponse(serializer.data, safe=False)
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = MessageSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+    new_message = Message.objects.create(value=message, user=username, room=room_id)
+    new_message.save()
+    return HttpResponse('Message sent successfully')
+
+def getMessages(request, room):
+    room_details = get_object_or_404(Room , name=room)
+    messages = Message.objects.filter(room=room_details.id)
+    return JsonResponse({"messages":list(messages.values())})
