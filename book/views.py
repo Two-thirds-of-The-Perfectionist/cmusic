@@ -37,11 +37,11 @@ class ForgotPassword(APIView):
 def new_password_post(request, activation_code):
     user = get_object_or_404(User, activation_code=activation_code)
     user.activation_code = None
-    user.is_active = True
-    user.save()
     ser = NewPasswordSerializer(data=request.data)
 
     if ser.is_valid(raise_exception=True):
+        user.is_active = True
+        user.save()
         ser.save()
 
         return Response('Your password successfully update', status=200)
@@ -81,7 +81,7 @@ def details_user(request, id):
 def subscribe(request):
     serializer = SubscriptionSerializer(data=request.data)
 
-    if serializer.is_valid(raise_exception=True):
+    if not serializer.is_valid(raise_exception=True):
         serializer.save()
 
     return Response(status=201)

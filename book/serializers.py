@@ -72,14 +72,19 @@ class NewPasswordSerializer(serializers.Serializer):
         data = self.validated_data
         email = data.get('email')
         password = data.get('password')
+
         try:
             user = User.objects.get(email=email)
+        
             if not user:
                 raise serializers.ValidationError('Пользователь не найден')
+        
         except User.DoesNotExist:
             raise serializers.ValidationError('Пользователь не найден')
+        
         user.set_password(password)
         user.save()
+        
         return user
 
 
@@ -88,6 +93,18 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
         fields = '__all__'
+    
+
+    def validate(self, attrs):
+        user_id = attrs.get('user')
+        subs_id = attrs.get('subscribe')
+
+        if Subscription.objects.filter(user=user_id, subscribe=subs_id).exists():
+            Subscription.objects.filter(user=user_id, subscribe=subs_id).delete()
+        else:
+            Subscription.objects.create(user=user_id, subscribe=subs_id)
+        
+        return attrs
 
 
 class SubscribeSerializer(serializers.ModelSerializer):
