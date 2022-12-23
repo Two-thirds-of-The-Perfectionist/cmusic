@@ -61,9 +61,9 @@ class User(AbstractUser):
         ratings = []
 
         for user in users:
-           ratings.append((user.likes(), user))
+           ratings.append((user, user.likes()))
         
-        ratings.sort(reverse=True)
+        ratings.sort(key=lambda x: x[1], reverse=True)
         
         for r in ratings:
             if self in r:
