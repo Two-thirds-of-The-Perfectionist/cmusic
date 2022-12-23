@@ -39,7 +39,7 @@ urlpatterns = [
     path('docs/', swagger_view.with_ui('swagger', cache_timeout=0)),
     path('account/', include('book.urls')),
     path('', TemplateView.as_view(template_name="index.html")),
-    path('google/login/callback/', google_login),
+    # path('google/login/callback/', google_login),
     path('google/activate/', google_activate),
     path('', include('allauth.urls')),
     path('logout/', LogoutView.as_view()),

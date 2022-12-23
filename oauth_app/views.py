@@ -18,7 +18,6 @@ def google_login(request):
 
 @api_view(['POST'])
 def google_activate(request):
-    print(request.data)
     if not request.data.get('email'):
         raise ValidationError(detail='Field "email" is required')
     
